@@ -1,0 +1,56 @@
+import { getSession } from '@/app/authentication'
+import Link from 'next/link'
+import React from 'react'
+import { Button } from '@/components/ui/button';
+import LogoutButton from './logoutButton';
+import LoginButton from './loginButton';
+
+
+const Navbar = async () => {
+  const session = await getSession();
+  
+  if (!session) {
+    return (
+      <div className='mb-5'>
+        <div className='flex flex-row justify-between bg-gray-200 py-3 px-5 items-center'>
+          <p className='text-xl font-bold'>Fixora</p>
+  
+          <LoginButton/>
+        </div>
+  
+      </div>
+    )
+  } else if (session.user.role === "USER") {
+    return (
+      <div className='mb-5'>  
+        <div className='flex flex-row justify-between bg-gray-200 py-3 px-5 items-center'>
+            <p className='text-xl font-bold'>Fixora</p>
+    
+            <ul className='flex flex-row gap-5 items-center'>
+              <Link href="/tickets">Tickets</Link>
+              <Link href="/changePassword">Change Password</Link>
+              <LogoutButton/>
+            </ul>
+    
+        </div>
+      </div>
+    )
+  } else {
+    return (
+      <div className='mb-5'>  
+        <div className='flex flex-row justify-between bg-gray-200 py-3 px-5 items-center'>
+            <p className='text-xl font-bold'>Fixora</p>
+    
+            <ul className='flex flex-row gap-5 items-center'>
+              <Link href="/dashboard">Dashboard</Link>
+              <LogoutButton/>
+            </ul>
+    
+        </div>
+      </div>
+    )
+  }
+  
+}
+
+export default Navbar
