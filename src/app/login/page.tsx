@@ -67,7 +67,7 @@ const page = () => {
         if (response.data.userRole === "USER") {
           router.push("/tickets");
         } else {
-          router.push("/dashboard");
+          router.push("/admin");
         }
       }
       else {

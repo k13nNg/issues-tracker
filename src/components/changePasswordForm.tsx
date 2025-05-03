@@ -1,28 +1,12 @@
 "use client";
 
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 import React from 'react';
-import {useForm, SubmitHandler, SubmitErrorHandler, Controller} from 'react-hook-form';
+import {useForm, SubmitHandler, SubmitErrorHandler} from 'react-hook-form';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 import bcrypt from "bcryptjs";
 import axios from 'axios';
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { RedirectType } from 'next/navigation';
-import { useRouter } from 'next/router';
-
-
-enum userRole {
-  ADMIN = "ADMIN",
-  USER = "USER",
-}
+import { Input } from './ui/input';
 
 type Inputs = {
   username: string,
@@ -130,9 +114,10 @@ const ChangePasswordForm = (props: any) => {
 
             <div className='w-full'>
             <form className='flex flex-col gap-5' onSubmit={handleSubmit(onSubmit)}>
-                <input placeholder="Old Password" className='border-2 px-2 rounded-xs' type='password' {...register("oldPassword")} />
-                <input placeholder="New Password" className='border-2 px-2 rounded-xs' type='password' {...register("newPassword")} />
-                <input placeholder="Confirm Password" className='border-2 px-2 rounded-xs' type='password' {...register("confirmNewPassword")} />
+                <p><b></b> {props.username}</p>
+                <Input placeholder="Old Password" className='border-2 px-2 rounded-xs' type='password' {...register("oldPassword")} />
+                <Input placeholder="New Password" className='border-2 px-2 rounded-xs' type='password' {...register("newPassword")} />
+                <Input placeholder="Confirm Password" className='border-2 px-2 rounded-xs' type='password' {...register("confirmNewPassword")} />
             </form>
             <div className='text-right pt-5'>
                 <Button type="button" onClick={(e) => {handleSubmit(onSubmit, onError)(e)}} className='hover:cursor-pointer'>Submit</Button>

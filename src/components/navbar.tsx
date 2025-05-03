@@ -42,7 +42,9 @@ const Navbar = async () => {
             <p className='text-xl font-bold'>Fixora</p>
     
             <ul className='flex flex-row gap-5 items-center'>
-              <Link href="/dashboard">Dashboard</Link>
+              <Link href="/admin">Dashboard</Link>
+              <Link href="/admin/tickets">Tickets</Link>
+              <Link href="/admin/users">Users</Link>
               <LogoutButton/>
             </ul>
     

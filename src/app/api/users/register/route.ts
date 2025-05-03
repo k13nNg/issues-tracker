@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import {z} from "zod";
 import prisma from "../../../../../prisma/client";
-import { UserLock } from "lucide-react";
-
 
 enum userRole {
     ADMIN = "ADMIN",

@@ -1,0 +1,186 @@
+"use client";
+import React, {useState} from 'react';
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+  } from "@/components/ui/table";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+  } from "@/components/ui/dialog"
+import { Button } from './ui/button';
+import { FaKey } from "react-icons/fa6";
+import { useRouter } from 'next/navigation';
+import { Input } from "@/components/ui/input";
+import {useForm, SubmitHandler, SubmitErrorHandler, Controller} from 'react-hook-form';
+import { Bounce, ToastContainer, toast } from 'react-toastify';
+import bcrypt from "bcryptjs";
+import axios from 'axios';
+
+interface User {
+    username: string,
+    role: string
+}
+
+type Inputs = {
+    newPassword: string,
+    confirmNewPassword: string,
+  }
+
+function ChangePasswordDialog(props:any) {
+    const {
+        reset,
+        register,
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<Inputs>();
+
+    const registerSuccess = () => toast.success('Changed Password Succesfully!', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+    });
+
+    const registerError = (msg: string) => toast.error(msg, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+    });
+
+    function isValidPassword(password: string): boolean {
+        const minLength = password.length >= 8;
+        const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+        const hasLowercase = /[a-z]/.test(password);
+        const hasUppercase = /[A-Z]/.test(password);
+        const hasNumber = /\d/.test(password);
+      
+        return minLength && hasSpecialChar && hasLowercase && hasUppercase && hasNumber;
+    }
+
+    const onSubmit: SubmitHandler<Inputs> = async (data) => {
+        const generatedSalt = await bcrypt.genSalt(10);
+
+        if (data.newPassword !== data.confirmNewPassword) {
+            registerError("Passwords don't match!");
+            reset();
+        } else if (!isValidPassword(data.newPassword)) {
+            console.log("asdflk");
+            registerError("Please make sure your password contains at leat 1 uppercase letter, 1 lowercase letter, 1 special character and is at least 8 characters long");
+            reset();
+        } else {
+            try {
+                const hashedPassword = await bcrypt.hash(data.newPassword, generatedSalt);
+                
+                const response = await axios.put("/api/users/changePassword", 
+                    {
+                        username: props.user, 
+                        password: hashedPassword,
+                    }, {
+                        headers: {
+                            Authorization: process.env.NEXT_PUBLIC_API_KEY
+                        }
+                    }
+                )
+
+                if (response.status !== null) {
+                registerSuccess();
+                reset();
+                }
+            } catch (e:any) {
+                console.log(e);
+                registerError("An unexpected error has occurred!");
+                reset();
+            }
+        }
+    };
+
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button variant="outline" className='hover:cursor-pointer'>Change Password <FaKey /></Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                <DialogTitle className='text-center'>Change Password</DialogTitle>
+                <DialogDescription className='text-center'>
+                    Change {props.user}'s password here
+                </DialogDescription>
+                </DialogHeader>
+                <form className='flex flex-col gap-5' onSubmit={handleSubmit(onSubmit)}>
+                    <Input placeholder="New Password" className='border-2 px-2 rounded-xs' type='password' {...register("newPassword")} />
+                    <Input placeholder="Confirm Password" className='border-2 px-2 rounded-xs' type='password' {...register("confirmNewPassword")} />
+                <DialogFooter>
+                <Button type="submit" className='hover:cursor-pointer'>Submit</Button>
+                </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+const UsersTable = (props: any) => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [role, setRole] = useState("");
+    const [showOptions, setShowOptions] = useState(false);
+    const [editingIndex, setEditingIndex] = useState(-1);
+    const router = useRouter();
+
+    return (
+        <div className='w-3/4'>
+            <ToastContainer/>
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead className='text-center'>Username</TableHead>
+                        <TableHead className='text-center'>Role</TableHead>
+                        <TableHead className='text-center'>Actions</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+
+                    {
+                        props.users.map((user: User, index: number) => (
+                            <TableRow key={index}>
+                                <TableCell className='text-center'>{user.username}</TableCell>
+                                <TableCell className='text-center'>
+                                    {user.role}
+                                </TableCell>
+                                <TableCell>
+                                    <div className='flex justify-center gap-5'>
+                                        <ChangePasswordDialog user = {user.username}/>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                            )
+                        )
+                    }
+                </TableBody>
+            </Table>
+        </div>
+    )
+}
+
+export default UsersTable

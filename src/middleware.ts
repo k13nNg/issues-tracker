@@ -6,11 +6,11 @@ export async function middleware(req: NextRequest) {
     const body = req.headers.get("Authorization");
     const session = await getSession();
 
-    if (req.nextUrl.pathname === "/admin") {
-        if (session !== null) {
+    if (req.nextUrl.pathname.startsWith("/admin")) {
+        if (session !== null && session.user.role === "ADMIN") {
             return await updateSession(req);
         } else {
-            return NextResponse.redirect("/");
+            return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}`);
         }
     }
 
@@ -29,5 +29,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-    matcher: "/api/:path*"
+    matcher: ["/api/:path*", "/admin", "/admin/:path*"]
 }
