@@ -30,8 +30,8 @@ export async function POST(request: NextRequest) {
                     desc: body.desc,
                     priority: body.priority,
                     author: body.author,
-                    createdAt: Math.floor((Date.now()) / 1000),
-                    updatedAt: Math.floor((Date.now()) / 1000),
+                    createdAt: Date.now(),
+                    updatedAt: Date.now(),
                 }
             })
     
@@ -66,7 +66,7 @@ export async function PUT(request: NextRequest) {
                 desc: body.desc,
                 status: body.status,
                 priority: body.priority,
-                updatedAt: Math.floor((Date.now()) / 1000),
+                updatedAt: Date.now(),
             }
         })
 

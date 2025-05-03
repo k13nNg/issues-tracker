@@ -136,14 +136,14 @@ const AdminTicketTable = (props: any) => {
     }
 
     return (
-        <div>
+        <div className='w-7xl'>
             <ToastContainer/>
             <Table>
                 <TableHeader>
                 <TableRow>
                     <TableHead className='w-[240px]'>Title</TableHead>
                     <TableHead className='w-[550px]'>Description</TableHead>
-                    <TableHead>Camp</TableHead>
+                    <TableHead className='text-center'>Camp</TableHead>
                     <TableHead>
                         <div className='flex items-center justify-center'>
                             <select className='text-center' id="priority" defaultValue="all" onChange={(e) => {
@@ -194,7 +194,7 @@ const AdminTicketTable = (props: any) => {
                                             <TableCell className='w-[550px]'>
                                                 <ReactMarkdown>{issue.desc}</ReactMarkdown>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className='text-center'>
                                                 {issue.author}
                                             </TableCell>
                                             <TableCell className=''>

@@ -154,9 +154,9 @@ const UsersTable = (props: any) => {
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead className='text-center'>Username</TableHead>
+                        <TableHead>Username</TableHead>
                         <TableHead className='text-center'>Role</TableHead>
-                        <TableHead className='text-center'>Actions</TableHead>
+                        <TableHead className='text-right' >Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -164,12 +164,12 @@ const UsersTable = (props: any) => {
                     {
                         props.users.map((user: User, index: number) => (
                             <TableRow key={index}>
-                                <TableCell className='text-center'>{user.username}</TableCell>
+                                <TableCell>{user.username}</TableCell>
                                 <TableCell className='text-center'>
                                     {user.role}
                                 </TableCell>
                                 <TableCell>
-                                    <div className='flex justify-center gap-5'>
+                                    <div className='flex justify-end gap-5'>
                                         <ChangePasswordDialog user = {user.username}/>
                                     </div>
                                 </TableCell>

@@ -13,7 +13,7 @@ const Navbar = async () => {
     return (
       <div className='mb-5'>
         <div className='flex flex-row justify-between bg-gray-200 py-3 px-5 items-center'>
-          <p className='text-xl font-bold'>Fixora</p>
+          <p className='text-xl font-bold'>Trackr</p>
   
           <LoginButton/>
         </div>
@@ -24,7 +24,7 @@ const Navbar = async () => {
     return (
       <div className='mb-5'>  
         <div className='flex flex-row justify-between bg-gray-200 py-3 px-5 items-center'>
-            <p className='text-xl font-bold'>Fixora</p>
+            <p className='text-xl font-bold'>Trackr</p>
     
             <ul className='flex flex-row gap-5 items-center'>
               <Link href="/tickets">Tickets</Link>
@@ -39,7 +39,7 @@ const Navbar = async () => {
     return (
       <div className='mb-5'>  
         <div className='flex flex-row justify-between bg-gray-200 py-3 px-5 items-center'>
-            <p className='text-xl font-bold'>Fixora</p>
+            <p className='text-xl font-bold'>Trackr</p>
     
             <ul className='flex flex-row gap-5 items-center'>
               <Link href="/admin">Dashboard</Link>

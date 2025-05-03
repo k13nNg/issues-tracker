@@ -13,7 +13,7 @@ async function getAllTickets() {
 const page = async () => {
   const allTickets = await getAllTickets();
   return (
-    <div className='p-5'>
+    <div className='p-5 flex justify-center items-center'>
       <AdminTicketTable tickets={allTickets}/>
     </div>
   )
