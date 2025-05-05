@@ -1,10 +1,6 @@
-import React, { useMemo } from 'react';
-import {useForm, Controller} from "react-hook-form";
-import dynamic from 'next/dynamic';
+import React from 'react';
 import "easymde/dist/easymde.min.css";
-import { redirect, useRouter } from 'next/navigation';
-import { Input } from "@/components/ui/input";
-import { Button } from '@/components/ui/button';
+import { redirect } from 'next/navigation';
 import MDE from '@/components/MDE';
 import { getSession } from '@/app/authentication';
 import axios from 'axios';
@@ -15,7 +11,7 @@ async function getTicketsWithUsername(username: string) {
     Authorization: process.env.NEXT_PUBLIC_API_KEY
   }})
 
-  let issues_array = issues.data.filter(
+  const issues_array = issues.data.filter(
     (issue: {author: string}) => issue.author === username
   );
 
@@ -24,25 +20,27 @@ async function getTicketsWithUsername(username: string) {
 
 const page = async () => {
   const session = await getSession();
-  const userIssues = await getTicketsWithUsername(session.user.username);
-
+  
   if(!session) {
     redirect("/login");
+  } else {
+    const userIssues = await getTicketsWithUsername(session.user.username);
+  
+  
+    return (
+      <div className = "flex flex-col lg:flex-row">
+        <div className='px-10 w-full lg:w-1/2 flex flex-col gap-3'>
+          <p className='text-2xl'>Welcome back, {session.user.username}!</p>
+          <MDE username={session.user.username}/>
+        </div>
+        <div className = "px-10 flex flex-col grow gap-3 sm:pb-5 min-h-screen">
+            <p className='text-2xl'>Your Tickets</p>
+            <UserTicketTable userIssues={userIssues}/>
+        </div>
+      </div>
+    )
   }
 
-
-  return (
-    <div className = "flex flex-col lg:flex-row">
-      <div className='px-10 w-full lg:w-1/2 flex flex-col gap-3'>
-        <p className='text-2xl'>Welcome back, {session.user.username}!</p>
-        <MDE username={session.user.username}/>
-      </div>
-      <div className = "px-10 flex flex-col grow gap-3 sm:pb-5 min-h-screen">
-          <p className='text-2xl'>Your Tickets</p>
-          <UserTicketTable userIssues={userIssues}/>
-      </div>
-    </div>
-  )
   
 }
 

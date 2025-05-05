@@ -1,12 +1,11 @@
 "use client"
 
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 import React from 'react';
 import {useForm, SubmitHandler, SubmitErrorHandler} from 'react-hook-form';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
-import { login, logout } from '../authentication';
-import axios from 'axios';
+import { login } from '../authentication';
+import axios, { AxiosError } from 'axios';
 import bcrypt from 'bcryptjs';
 import { useRouter } from 'next/navigation';
 
@@ -39,12 +38,10 @@ const forgotPasswordToast = () => toast('Please contact the Technical Program As
     transition: Bounce,
     });
 
-const page = () => {
+const Page = () => {
   const {
     register,
     handleSubmit,
-    watch,
-    formState: { errors },
   } = useForm<Inputs>();
 
   const router = useRouter();
@@ -73,8 +70,14 @@ const page = () => {
       else {
         errorToast("Incorrect Password!");
       }
-    } catch (error: any) {
-      errorToast(error.response.data);
+    } catch (error: unknown) {
+        if (error instanceof AxiosError && typeof error.response?.data === "string") {
+          errorToast(error.response.data);
+        } else if (error instanceof Error) {
+          errorToast(error.message); // fallback
+        } else {
+          errorToast("An unknown error occurred.");
+        }
     }
 
 
@@ -105,4 +108,4 @@ const page = () => {
   )
 }
 
-export default page;
+export default Page;

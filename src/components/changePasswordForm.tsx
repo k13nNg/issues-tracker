@@ -18,9 +18,7 @@ const ChangePasswordForm = (props: any) => {
     const {
         reset,
         register,
-        control,
-        handleSubmit,
-        formState: { errors },
+        handleSubmit
     } = useForm<Inputs>()
 
     const registerSuccess = () => toast.success('Changed Password Succesfully!', {

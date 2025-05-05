@@ -1,7 +1,6 @@
 import { getSession } from '@/app/authentication'
 import Link from 'next/link'
 import React from 'react'
-import { Button } from '@/components/ui/button';
 import LogoutButton from './logoutButton';
 import LoginButton from './loginButton';
 

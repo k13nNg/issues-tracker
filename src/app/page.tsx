@@ -1,11 +1,8 @@
 // "use client"
-import Image from "next/image";
-import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { FiArrowRight } from "react-icons/fi";
 import Link from "next/link";
 import { getSession } from "./authentication";
-import { useRouter } from 'next/navigation';
 
 export default async function Home() {
   // const router = useRouter();

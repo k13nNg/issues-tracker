@@ -1,9 +1,8 @@
 "use client";
-import React, {useState} from 'react';
+import React from 'react';
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -20,9 +19,8 @@ import {
   } from "@/components/ui/dialog"
 import { Button } from './ui/button';
 import { FaKey } from "react-icons/fa6";
-import { useRouter } from 'next/navigation';
 import { Input } from "@/components/ui/input";
-import {useForm, SubmitHandler, SubmitErrorHandler, Controller} from 'react-hook-form';
+import {useForm, SubmitHandler} from 'react-hook-form';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 import bcrypt from "bcryptjs";
 import axios from 'axios';
@@ -41,9 +39,7 @@ function ChangePasswordDialog(props:any) {
     const {
         reset,
         register,
-        control,
-        handleSubmit,
-        formState: { errors },
+        handleSubmit
     } = useForm<Inputs>();
 
     const registerSuccess = () => toast.success('Changed Password Succesfully!', {
@@ -126,7 +122,7 @@ function ChangePasswordDialog(props:any) {
                 <DialogHeader>
                 <DialogTitle className='text-center'>Change Password</DialogTitle>
                 <DialogDescription className='text-center'>
-                    Change {props.user}'s password here
+                    Change {props.user}&apos;s password here
                 </DialogDescription>
                 </DialogHeader>
                 <form className='flex flex-col gap-5' onSubmit={handleSubmit(onSubmit)}>
@@ -142,11 +138,6 @@ function ChangePasswordDialog(props:any) {
 }
 
 const UsersTable = (props: any) => {
-    const [isEditing, setIsEditing] = useState(false);
-    const [role, setRole] = useState("");
-    const [showOptions, setShowOptions] = useState(false);
-    const [editingIndex, setEditingIndex] = useState(-1);
-    const router = useRouter();
 
     return (
         <div className='w-3/4'>

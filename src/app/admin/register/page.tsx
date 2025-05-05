@@ -1,7 +1,6 @@
 "use client"
 
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 import React from 'react';
 import {useForm, SubmitHandler, SubmitErrorHandler, Controller} from 'react-hook-form';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
@@ -28,16 +27,15 @@ type Inputs = {
   role: userRole
 }
 
-const page = () => {
+const Page = () => {
   const {
     reset,
     register,
     control,
     handleSubmit,
-    formState: { errors },
   } = useForm<Inputs>()
 
-    const registerSuccess = () => toast.success('Registered User Succesfully!', {
+    const RegisterSuccess = () => toast.success('Registered User Succesfully!', {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -49,7 +47,7 @@ const page = () => {
         transition: Bounce,
     });
 
-    const registerError = (msg: string) => toast.error(msg, {
+    const RegisterError = (msg: string) => toast.error(msg, {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -75,13 +73,13 @@ const page = () => {
     const generatedSalt = await bcrypt.genSalt(10);
 
     if (!isValidPassword(data.password)) {
-      registerError("Please make sure your password contains at leat 1 uppercase letter, 1 lowercase letter, 1 special character and is at least 8 characters long");
+      RegisterError("Please make sure your password contains at leat 1 uppercase letter, 1 lowercase letter, 1 special character and is at least 8 characters long");
       reset();
     } else if (data.password !== data.confirmPassword) {
-        registerError("Passwords don't match!");
+        RegisterError("Passwords don't match!");
         reset();
     } else if (data.role === undefined) {
-      registerError("Please select a role for the user!");
+      RegisterError("Please select a role for the user!");
     } else {
         try {
 
@@ -100,12 +98,16 @@ const page = () => {
             )
 
             if (response.status !== null) {
-              registerSuccess();
+              RegisterSuccess();
               reset();
             }
-        } catch (e:any) {
-            registerError(typeof e.response.data == "string" ? e.response.data : "An unexpected error has occurred!");
-            reset();
+        } catch (e: unknown) {
+          if (e && typeof e === "object" && "response" in e) {
+            const err = e as { response: { data: string } };
+            RegisterError(typeof err.response.data === "string" ? err.response.data : "An error occurred");
+          } else {
+            RegisterError("An unexpected error has occurred!");
+          }
         }
     }
     // console.log(data);
@@ -152,4 +154,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

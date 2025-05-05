@@ -1,7 +1,6 @@
 // app/components/LogoutButton.tsx
 "use client";
 
-import { logout } from "@/app/authentication";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 

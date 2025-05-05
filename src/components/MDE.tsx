@@ -50,7 +50,7 @@ const MDE = (props: any) => {
         }
     ];
 
-    const options = useMemo(() => ({
+    const options: EasyMDE.Options = useMemo(() => ({
         autofocus: false,
         spellChecker: true,
         toolbar: toolbar,

@@ -3,7 +3,6 @@ import React, {useState} from 'react'
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -115,7 +114,7 @@ const AdminTicketTable = (props: any) => {
             success("Updated ticket successfully!");
             router.refresh();
         } catch (e) {
-            error("An unexpected error has occured");
+            error(`An unexpected error has occured: ${e}`);
         }
 
     }
@@ -131,7 +130,7 @@ const AdminTicketTable = (props: any) => {
             success("Deleted ticket successfully!")
             router.refresh();
         } catch (e) {
-            error("An unexpected error has occured");
+            error(`An unexpected error has occured: ${e}`);
         }
     }
 
@@ -220,7 +219,7 @@ const AdminTicketTable = (props: any) => {
                                             </TableCell>
                                             <TableCell>
                                                 {(isEditing && editingIndex === index) ? (<div className='flex flex-col gap-3'>
-                                                    <Button className='hover:cursor-pointer' type="button" onClick={(e) => {
+                                                    <Button className='hover:cursor-pointer' type="button" onClick={() => {
                                                         setIsEditing(!isEditing);
                                                         setEditingIndex(-1);
                                                         if (updatedPriority !== "" || updatedStatus !== "") {
@@ -238,16 +237,16 @@ const AdminTicketTable = (props: any) => {
                                                     }
                                                     }>Submit<CiCircleCheck/></Button>
                                                 </div>) : ( (showOptions && editingIndex === index)? (<div className='flex flex-col gap-3'>
-                                                        <Button className='bg-blue-500 hover:bg-blue-400 hover:cursor-pointer' onClick={(e) => {
+                                                        <Button className='bg-blue-500 hover:bg-blue-400 hover:cursor-pointer' onClick={() => {
                                                             setIsEditing(!isEditing);
                                                             // setEditingIndex(index);
                                                         }}>Edit <CiEdit/></Button>
-                                                        <Button className='bg-red-500 hover:bg-red-400 hover:cursor-pointer' onClick={(e) => {
+                                                        <Button className='bg-red-500 hover:bg-red-400 hover:cursor-pointer' onClick={() => {
                                                             handleDelete(issue)
                                                             setEditingIndex(-1);
                                                         }}>Delete <CiTrash/></Button>
                                                     </div>) : (<div className='flex justify-center items-center'>
-                                                        <BsThreeDotsVertical className="hover:cursor-pointer" onClick={(e) => {
+                                                        <BsThreeDotsVertical className="hover:cursor-pointer" onClick={() => {
                                                             setEditingIndex(index);
                                                             setShowOptions(!showOptions);
                                                         }}/>
