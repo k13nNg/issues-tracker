@@ -8,7 +8,7 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table";
-import ReactMarkdown from "react-markdown";
+import Markdown from "react-markdown";
 import { CiTrash } from "react-icons/ci";
 import { CiEdit } from "react-icons/ci";
 import { Button } from './ui/button';
@@ -191,7 +191,7 @@ const AdminTicketTable = (props: any) => {
                                             <TableRow key={index} className='w-[240px]'>
                                             <TableCell>{issue.title}</TableCell>
                                             <TableCell className='w-[550px]'>
-                                                <ReactMarkdown>{issue.desc}</ReactMarkdown>
+                                                <Markdown>{issue.desc}</Markdown>
                                             </TableCell>
                                             <TableCell className='text-center'>
                                                 {issue.author}

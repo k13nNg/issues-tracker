@@ -8,7 +8,7 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table";
-import ReactMarkdown from "react-markdown";
+import Markdown from "react-markdown";
 
 const UserTicketTable = (props: any) => {
     const [status, setStatus] = useState("all");
@@ -118,7 +118,7 @@ const UserTicketTable = (props: any) => {
                                         <TableRow key={index}>
                                         <TableCell>{issue.title}</TableCell>
                                         <TableCell>
-                                            <ReactMarkdown>{issue.desc}</ReactMarkdown>
+                                            <Markdown>{issue.desc}</Markdown>
                                         </TableCell>
                                         <TableCell className=''>
                                             {/* <div className='bg-green-200 rounded-sm text-center'>
