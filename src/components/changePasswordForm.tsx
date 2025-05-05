@@ -5,8 +5,8 @@ import React from 'react';
 import {useForm, SubmitHandler, SubmitErrorHandler} from 'react-hook-form';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 import bcrypt from "bcryptjs";
-import axios from 'axios';
 import { Input } from './ui/input';
+import { changePasswordUser, getUser } from '@/app/changePassword/changePassword';
 
 type Inputs = {
   username: string,
@@ -21,7 +21,7 @@ const ChangePasswordForm = (props: any) => {
         handleSubmit
     } = useForm<Inputs>()
 
-    const registerSuccess = () => toast.success('Changed Password Succesfully!', {
+    const successToast = (msg: string) => toast.success(msg, {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -33,7 +33,7 @@ const ChangePasswordForm = (props: any) => {
         transition: Bounce,
     });
 
-    const registerError = (msg: string) => toast.error(msg, {
+    const errorToast = (msg: string) => toast.error(msg, {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -57,48 +57,29 @@ const ChangePasswordForm = (props: any) => {
     
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
         const generatedSalt = await bcrypt.genSalt(10);
-        const user = await axios.post("/api/users/changePassword",
-            {
-                username: props.username
-            }, 
-            { headers: {
-                    Authorization: process.env.NEXT_PUBLIC_API_KEY
-                }
-            }
-        );
-        if (await bcrypt.compareSync(data.oldPassword, user?.data.password) === false){
-            registerError("Current password doesn't match");
+        
+        const user = await getUser({username: props.username, password: data.newPassword});
+
+        if (await bcrypt.compareSync(data.oldPassword, user.password) === false){
+            errorToast("Current password doesn't match");
             reset();
         } else if (data.newPassword !== data.confirmNewPassword) {
-            registerError("Passwords don't match!");
+            errorToast("Passwords don't match!");
             reset();
         } else if (!isValidPassword(data.newPassword)) {
-            registerError("Please make sure your password contains at leat 1 uppercase letter, 1 lowercase letter, 1 special character and is at least 8 characters long");
+            errorToast("Please make sure your password contains at leat 1 uppercase letter, 1 lowercase letter, 1 special character and is at least 8 characters long");
             reset();
         } else {
-            try {
-                const hashedPassword = await bcrypt.hash(data.newPassword, generatedSalt);
-                
-                const response = await axios.put("/api/users/changePassword", 
-                    {
-                        username: props.username, 
-                        password: hashedPassword,
-                    }, {
-                        headers: {
-                            Authorization: process.env.NEXT_PUBLIC_API_KEY
-                        }
-                    }
-                )
+            const hashedPassword = await bcrypt.hash(data.newPassword, generatedSalt);
+            
+            const result = await changePasswordUser({username: props.username, password: hashedPassword});
 
-                if (response.status !== null) {
-                registerSuccess();
-                reset();
-                }
-            } catch (e:any) {
-                console.log(e);
-                registerError("An unexpected error has occurred!");
-                reset();
+            if (result.success) {
+                successToast(result.success);
+            } else {
+                errorToast(result.error);
             }
+            reset();
         }
     };
 

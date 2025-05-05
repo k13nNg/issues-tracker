@@ -10,14 +10,13 @@ export async function middleware(req: NextRequest) {
         if (session !== null && session.user.role === "ADMIN") {
             return await updateSession(req);
         } else {
-            return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}`);
+            return NextResponse.redirect(`${process.env.BASE_URL}`);
         }
     }
 
 
     if (req.nextUrl.pathname.startsWith("/api")){
-        
-        if (body == process.env.NEXT_PUBLIC_API_KEY) {
+        if (body === process.env.API_KEY) {
     
             // retrieve the current response
             return await updateSession(req)

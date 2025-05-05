@@ -1,12 +1,9 @@
 "use client"
-
 import { Button } from '@/components/ui/button';
 import React from 'react';
 import {useForm, SubmitHandler, SubmitErrorHandler} from 'react-hook-form';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
-import { login } from '../authentication';
-import axios, { AxiosError } from 'axios';
-import bcrypt from 'bcryptjs';
+import { authenticateUser } from '../authentication';
 import { useRouter } from 'next/navigation';
 
 type Inputs = {
@@ -26,17 +23,29 @@ const forgotPasswordToast = () => toast('Please contact the Technical Program As
   transition: Bounce,
   });
 
-  const errorToast = (m: string) => toast.error(m, {
-    position: "top-center",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: false,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-    transition: Bounce,
-    });
+const errorToast = (m: string) => toast.error(m, {
+  position: "top-center",
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: false,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: "light",
+  transition: Bounce,
+});
+
+const successToast = (m: string) => toast.success(m, {
+  position: "top-center",
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: false,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: "light",
+  transition: Bounce,
+});
 
 const Page = () => {
   const {
@@ -48,40 +57,21 @@ const Page = () => {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
 
-    try {
+    const result = await authenticateUser(data.username, data.password);
 
-      const response = await axios.post("/api/users/login", 
-          {
-            username: data.username 
-          }, {
-            headers: {
-              Authorization: process.env.NEXT_PUBLIC_API_KEY
-            }
-          }
-      )
-      if (bcrypt.compareSync(data.password, response.data.password) === true) {
-        await login(response.data);
-        if (response.data.userRole === "USER") {
-          router.push("/tickets");
-        } else {
-          router.push("/admin");
-        }
+    if (result.error) {
+      errorToast(result.error);
+    } else if (result.success) {
+      successToast(result.success);
+       
+      if (result.userRole === "USER") {
+        router.push("/tickets");
+      } else {
+        router.push("/admin");
       }
-      else {
-        errorToast("Incorrect Password!");
-      }
-    } catch (error: unknown) {
-        if (error instanceof AxiosError && typeof error.response?.data === "string") {
-          errorToast(error.response.data);
-        } else if (error instanceof Error) {
-          errorToast(error.message); // fallback
-        } else {
-          errorToast("An unknown error occurred.");
-        }
+    } else {
+      errorToast("An unexpected error has occurred!");
     }
-
-
-    
 
   };
   

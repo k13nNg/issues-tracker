@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import {useForm, SubmitHandler} from 'react-hook-form';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 import bcrypt from "bcryptjs";
-import axios from 'axios';
+import { changePasswordAdmin} from '@/app/changePassword/changePassword';
 
 interface User {
     username: string,
@@ -42,7 +42,7 @@ function ChangePasswordDialog(props:any) {
         handleSubmit
     } = useForm<Inputs>();
 
-    const registerSuccess = () => toast.success('Changed Password Succesfully!', {
+    const successToast = (msg: string) => toast.success(msg, {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -54,7 +54,7 @@ function ChangePasswordDialog(props:any) {
         transition: Bounce,
     });
 
-    const registerError = (msg: string) => toast.error(msg, {
+    const errorToast = (msg: string) => toast.error(msg, {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -80,35 +80,21 @@ function ChangePasswordDialog(props:any) {
         const generatedSalt = await bcrypt.genSalt(10);
 
         if (data.newPassword !== data.confirmNewPassword) {
-            registerError("Passwords don't match!");
+            errorToast("Passwords don't match!");
             reset();
         } else if (!isValidPassword(data.newPassword)) {
-            console.log("asdflk");
-            registerError("Please make sure your password contains at leat 1 uppercase letter, 1 lowercase letter, 1 special character and is at least 8 characters long");
+
+            errorToast("Please make sure your password contains at leat 1 uppercase letter, 1 lowercase letter, 1 special character and is at least 8 characters long");
             reset();
         } else {
-            try {
-                const hashedPassword = await bcrypt.hash(data.newPassword, generatedSalt);
-                
-                const response = await axios.put("/api/users/changePassword", 
-                    {
-                        username: props.user, 
-                        password: hashedPassword,
-                    }, {
-                        headers: {
-                            Authorization: process.env.NEXT_PUBLIC_API_KEY
-                        }
-                    }
-                )
+            const hashedPassword = await bcrypt.hash(data.newPassword, generatedSalt);
+            
+            const result = await changePasswordAdmin({username: props.user, password: hashedPassword});
 
-                if (response.status !== null) {
-                registerSuccess();
-                reset();
-                }
-            } catch (e:any) {
-                console.log(e);
-                registerError("An unexpected error has occurred!");
-                reset();
+            if (result.success) {
+                successToast(result.success);
+            } else {
+                errorToast(result.error);
             }
         }
     };

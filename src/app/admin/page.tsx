@@ -12,8 +12,8 @@ const Dashboard = async () => {
 }
 
   async function getAllTickets() {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tickets`, {headers: {
-      "Authorization": process.env.NEXT_PUBLIC_API_KEY
+    const response = await axios.get(`${process.env.BASE_URL}/api/tickets`, {headers: {
+      "Authorization": process.env.API_KEY
     }})
 
     return response.data;

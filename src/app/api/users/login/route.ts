@@ -5,7 +5,7 @@ export async function POST (request: NextRequest){
     const body = await request.json();
 
     const user = await prisma.user.findFirst({where: {username: body.username}})
-
+    console.log("asdf")
     if (!user) {
         return NextResponse.json("User does not exist!", {status: 400})
     }

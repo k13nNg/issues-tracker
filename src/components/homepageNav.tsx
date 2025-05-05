@@ -9,9 +9,6 @@ const HomepageNav = async () => {
 
     if (session === null) {
         return (
-            // <div>
-            //   <Button className="hover:cursor-pointer" onClick={() => router.push('/login')}>Log in <FiArrowRight/></Button>
-            // </div>
             <LoginButton/>
         )
     } else if (session.user.role === "USER") {

@@ -4,8 +4,6 @@ import { Button } from '@/components/ui/button';
 import React from 'react';
 import {useForm, SubmitHandler, SubmitErrorHandler, Controller} from 'react-hook-form';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
-import bcrypt from "bcryptjs";
-import axios from 'axios';
 import {
   Select,
   SelectContent,
@@ -13,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { registerUser } from './registerUser';
 
 
 enum userRole {
@@ -35,7 +34,7 @@ const Page = () => {
     handleSubmit,
   } = useForm<Inputs>()
 
-    const RegisterSuccess = () => toast.success('Registered User Succesfully!', {
+    const RegisterSuccess = (m: string) => toast.success(m, {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -70,7 +69,7 @@ const Page = () => {
   }
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const generatedSalt = await bcrypt.genSalt(10);
+
 
     if (!isValidPassword(data.password)) {
       RegisterError("Please make sure your password contains at leat 1 uppercase letter, 1 lowercase letter, 1 special character and is at least 8 characters long");
@@ -81,36 +80,19 @@ const Page = () => {
     } else if (data.role === undefined) {
       RegisterError("Please select a role for the user!");
     } else {
-        try {
-
-            const hashedPassword = await bcrypt.hash(data.password, generatedSalt);
-    
-            const response = await axios.post("/api/users/register", 
-                {
-                    username: data.username, 
-                    password: hashedPassword, 
-                    role: data.role
-                }, {
-                  headers: {
-                    Authorization: process.env.NEXT_PUBLIC_API_KEY
-                  }
-                }
-            )
-
-            if (response.status !== null) {
-              RegisterSuccess();
-              reset();
-            }
-        } catch (e: unknown) {
-          if (e && typeof e === "object" && "response" in e) {
-            const err = e as { response: { data: string } };
-            RegisterError(typeof err.response.data === "string" ? err.response.data : "An error occurred");
-          } else {
-            RegisterError("An unexpected error has occurred!");
-          }
+        const newUser = {
+          username: data.username,
+          password: data.password,
+          role: data.role
         }
+        const result = await registerUser(newUser);
+
+        if (result.success) {
+          RegisterSuccess(result.success);
+        } else {
+          RegisterError(result.error);
+        } 
     }
-    // console.log(data);
   };
 
   const onError: SubmitErrorHandler<Inputs> = (errors) => console.log(errors);

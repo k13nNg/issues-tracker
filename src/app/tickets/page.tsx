@@ -7,15 +7,21 @@ import axios from 'axios';
 import UserTicketTable from '@/components/userTicketTable';
 
 async function getTicketsWithUsername(username: string) {
-  const issues = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tickets`, {headers: {
-    Authorization: process.env.NEXT_PUBLIC_API_KEY
-  }})
 
-  const issues_array = issues.data.filter(
-    (issue: {author: string}) => issue.author === username
-  );
+  try {
 
-  return issues_array;
+    const issues = await axios.get(`${process.env.BASE_URL}/api/tickets`, {headers: {
+      Authorization: process.env.API_KEY
+    }})
+    
+    const issues_array = issues.data.filter(
+      (issue: {author: string}) => issue.author === username
+    );
+    return issues_array;
+  } catch (e) {
+    console.log(e);
+  }
+
 }
 
 const page = async () => {
@@ -25,7 +31,6 @@ const page = async () => {
     redirect("/login");
   } else {
     const userIssues = await getTicketsWithUsername(session.user.username);
-  
   
     return (
       <div className = "flex flex-col lg:flex-row">

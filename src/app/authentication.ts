@@ -1,4 +1,6 @@
 "use server"
+import axios from "axios";
+import bcrypt from "bcryptjs";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
@@ -31,7 +33,33 @@ export async function decrypt(input: string): Promise<any> {
     }
 }
 
-export async function login(data: User) {
+export async function authenticateUser(username: string, passwordToCheck: string) {
+    try {
+      const response = await axios.post(
+        `${process.env.BASE_URL}/api/users/login`,
+        { username },
+        { headers: { Authorization: process.env.API_KEY } }
+      );
+  
+      if (response.data && response.data.password) {
+        if (bcrypt.compareSync(passwordToCheck, response.data.password)) {
+          await createSession(response.data);
+          
+          return {success: "Login Successfully!", userRole: response.data.userRole};
+
+        } else {
+          return { error: 'Incorrect Password!' };
+        }
+      } else {
+        return { error: 'Login failed: Invalid response from server.' };
+      }
+    } catch (error: any) {
+      console.error('Error during login:', error);
+      return { error: error.message || 'An unexpected error occurred.' };
+    }
+  }
+
+export async function createSession(data: User) {
     const now = Date.now();
     const sessionStart = new Date(now);
     const expires = new Date(now + (1 * 60 * 60 * 1000)); // 1 hour from now

@@ -109,7 +109,7 @@ const AdminTicketTable = (props: any) => {
     async function handleSubmit(data: Issue) {
         try {
             await axios.put("/api/tickets", data, {
-                headers: {"Authorization": process.env.NEXT_PUBLIC_API_KEY}
+                headers: {"Authorization": process.env.API_KEY}
             }) 
             success("Updated ticket successfully!");
             router.refresh();
@@ -123,7 +123,7 @@ const AdminTicketTable = (props: any) => {
         try {
             await axios.delete("/api/tickets", {
             headers: {
-                    "Authorization": process.env.NEXT_PUBLIC_API_KEY
+                    "Authorization": process.env.API_KEY
                 },
                 data
             })

@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 export default function LoginButton() {
   const router = useRouter();
 
-  const handleLogout = async () => {
+  const handleLogin = async () => {
     router.push("/login");
   };
 
-  return <Button className="hover:cursor-pointer" onClick={handleLogout}>Login</Button>;
+  return <Button className="hover:cursor-pointer" onClick={handleLogin}>Login</Button>;
 }

@@ -4,9 +4,9 @@ import React from 'react'
 
 async function getAllUsers() {
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/users`, {
+    const response = await axios.get(`${process.env.BASE_URL}/api/users`, {
       headers: {
-        "Authorization": process.env.NEXT_PUBLIC_API_KEY
+        "Authorization": process.env.API_KEY
       }
     })
 

@@ -9,8 +9,9 @@ import dynamic from 'next/dynamic';
 const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
     ssr: false,
 });
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { createTicket } from '@/app/tickets/submitTicket';
+import { Bounce, toast, ToastContainer } from 'react-toastify';
 
 const MDE = (props: any) => {
     const router = useRouter();
@@ -62,17 +63,40 @@ const MDE = (props: any) => {
       HIGH
     }
     
-    interface IssueForm {
+    interface TicketForm {
       title: string,
       priority: Priority,
       desc: string
     }
 
-    const {register, control, handleSubmit, reset} = useForm<IssueForm>();
+    const {register, control, handleSubmit, reset} = useForm<TicketForm>();
 
+    const successToast = (msg: string) => toast.success(msg, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+    });
 
+    const errorToast = (msg: string) => toast.error(msg, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+    });
   return (
     <div className=''>
+        <ToastContainer/>
         <div>
             <form onSubmit={handleSubmit(async (data) => {
                 const payload = {
@@ -81,15 +105,16 @@ const MDE = (props: any) => {
                     desc: data.desc,
                     author: props.username
                 }
-                try{
-                    await axios.post("/api/tickets", payload, {
-                        headers: {"Authorization": process.env.NEXT_PUBLIC_API_KEY}
-                    })
+                const result = await createTicket(payload);
+
+                if (result.success) {
+                    successToast(result.success);
                     reset();
                     router.refresh();
-                } catch (error) {
-                    console.log(error)
+                } else {
+                    errorToast(result.error);
                 }
+
 
             })}>
                 <div className='flex flex-row items-start space-x-10 justify-between'>
