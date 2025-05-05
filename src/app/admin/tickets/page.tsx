@@ -3,8 +3,8 @@ import axios from 'axios';
 import AdminTicketTable from '@/components/adminTicketTable';
 
 async function getAllTickets() {
-  const tickets = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tickets`, {headers: {
-    Authorization: process.env.NEXT_PUBLIC_API_KEY
+  const tickets = await axios.get(`${process.env.BASE_URL}/api/tickets`, {headers: {
+    Authorization: process.env.API_KEY
   }})
 
   return tickets.data;
