@@ -16,12 +16,14 @@ export async function middleware(req: NextRequest) {
 
 
     if (req.nextUrl.pathname.startsWith("/api")){
+
         if (body === process.env.API_KEY) {
     
             // retrieve the current response
             return await updateSession(req)
     
         } else {
+
             return NextResponse.json("Unauthorized access", {status: 400})
         }
     }

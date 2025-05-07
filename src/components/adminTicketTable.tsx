@@ -17,6 +17,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { deleteTicket, editTicket } from '@/app/admin/tickets/editTickets';
 
 
 const AdminTicketTable = (props: any) => {
@@ -107,31 +108,29 @@ const AdminTicketTable = (props: any) => {
     }
 
     async function handleSubmit(data: Issue) {
-        try {
-            await axios.put("/api/tickets", data, {
-                headers: {"Authorization": process.env.API_KEY}
-            }) 
-            success("Updated ticket successfully!");
-            router.refresh();
-        } catch (e) {
-            error(`An unexpected error has occured: ${e}`);
+        const result = await editTicket(data);
+        
+        if (result.success) {
+            success(result.success);
+        } else {
+            error(result.error);
         }
+        
+        router.refresh();
 
     }
 
     async function handleDelete(data: Issue) {
-        try {
-            await axios.delete("/api/tickets", {
-            headers: {
-                    "Authorization": process.env.API_KEY
-                },
-                data
-            })
-            success("Deleted ticket successfully!")
-            router.refresh();
-        } catch (e) {
-            error(`An unexpected error has occured: ${e}`);
+        console.log(data);
+        const result = await deleteTicket(data);
+
+        if (result.success) {
+            success(result.success);
+        } else {
+            error(result.error);
         }
+        
+        router.refresh();
     }
 
     return (

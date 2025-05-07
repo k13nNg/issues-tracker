@@ -76,13 +76,15 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-    const body = await request.json();
+    const data = await request.json();
 
-    const deletedProject = await prisma.ticket.delete({
+    const deletedTicket = await prisma.ticket.delete({
         where: {
-            id: body.id
+            id: data.ticket.id
         }
     })
 
-    return NextResponse.json(deletedProject, {status: 200});
+
+
+    return NextResponse.json(deletedTicket, {status: 200});
 }
