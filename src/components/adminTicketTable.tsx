@@ -13,7 +13,6 @@ import { CiTrash } from "react-icons/ci";
 import { CiEdit } from "react-icons/ci";
 import { Button } from './ui/button';
 import { CiCircleCheck } from "react-icons/ci";
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 import { BsThreeDotsVertical } from "react-icons/bs";
