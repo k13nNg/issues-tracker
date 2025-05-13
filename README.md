@@ -23,7 +23,7 @@ The environment file must include:
 - BASE_URL (for api routing)
 
 Want to test the app out? Use the following login credentials!
-Demo Link: https://issues-report.vercel.app/
+Demo Link: [https://issues-report.vercel.app/](https://issues-tracker-tau.vercel.app/)
 
 THIS APP IS OPEN TO THE INTERNET, SO PLEASE WATCH OUT WHAT YOU COMMENT!!
 
